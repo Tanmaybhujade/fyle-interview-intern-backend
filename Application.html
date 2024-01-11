@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Application</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h2 id="application">Application</h2>
+<p>There are 5 resources:</p>
+<ul>
+<li>Users</li>
+<li>Principal</li>
+<li>Students</li>
+<li>Teachers</li>
+<li>Assignments</li>
+</ul>
+<p>5 Users (1 Principal, 2 students and 2 teachers) have already been created for you in the db fixture</p>
+<ul>
+<li>A principal can view all the teachers</li>
+<li>A principal can view all the assignments submitted and/or graded by teachers.</li>
+<li>A principal can re-grade the assignments already graded by the teacher.</li>
+<li>A student can create and edit a draft assignment</li>
+<li>A student can list all his created assignments</li>
+<li>A student can submit a draft assignment to a teacher</li>
+<li>A teacher can list all assignments submitted to him</li>
+<li>A teacher can grade an assignment submitted to him</li>
+</ul>
+<h2 id="challenge">Challenge</h2>
+<p>Please fork the repository into your account and continue the development in your fork.</p>
+<p>Your tasks</p>
+<ul>
+<li>Add missing APIs mentioned here and get the automated tests to pass</li>
+<li>Add tests for grading API</li>
+<li>All tests should pass</li>
+<li>Get the test coverage to 94% or above</li>
+<li>There are certain SQL tests present inside <code>tests/SQL/</code>. You have to write SQL in following files:
+<ul>
+<li>count_grade_A_assignments_by_teacher_with_max_grading.sql</li>
+<li>number_of_assignments_per_state.sql</li>
+</ul>
+</li>
+<li>Optionally, Dockerize your application by creating a Dockerfile and a docker-compose.yml file, providing clear documentation on building and running the application with Docker, to stand out in your submission</li>
+</ul>
+<p>Once you are done with your task, please use <a href="https://forms.gle/dJLNMyBmBCJSv6EH7">this form</a> to complete your submission.</p>
+<p>You will hear back within 48 hours from us via email.</p>
+<h2 id="available-apis">Available APIs</h2>
+<h3 id="auth">Auth</h3>
+<ul>
+<li>header: &quot;X-Principal&quot;</li>
+<li>value: {&quot;user_id&quot;:1, &quot;student_id&quot;:1}</li>
+</ul>
+<p>For APIs to work you need a principal header to establish identity and context</p>
+<h3 id="get-studentassignments">GET /student/assignments</h3>
+<p>List all assignments created by a student</p>
+<pre><code>headers:
+X-Principal: {&quot;user_id&quot;:1, &quot;student_id&quot;:1}
+
+response:
+{
+    &quot;data&quot;: [
+        {
+            &quot;content&quot;: &quot;ESSAY T1&quot;,
+            &quot;created_at&quot;: &quot;2021-09-17T02:53:45.028101&quot;,
+            &quot;grade&quot;: null,
+            &quot;id&quot;: 1,
+            &quot;state&quot;: &quot;SUBMITTED&quot;,
+            &quot;student_id&quot;: 1,
+            &quot;teacher_id&quot;: 1,
+            &quot;updated_at&quot;: &quot;2021-09-17T02:53:45.034289&quot;
+        },
+        {
+            &quot;content&quot;: &quot;THESIS T1&quot;,
+            &quot;created_at&quot;: &quot;2021-09-17T02:53:45.028876&quot;,
+            &quot;grade&quot;: null,
+            &quot;id&quot;: 2,
+            &quot;state&quot;: &quot;DRAFT&quot;,
+            &quot;student_id&quot;: 1,
+            &quot;teacher_id&quot;: null,
+            &quot;updated_at&quot;: &quot;2021-09-17T02:53:45.028882&quot;
+        }
+    ]
+}
+</code></pre>
+<h3 id="post-studentassignments">POST /student/assignments</h3>
+<p>Create an assignment</p>
+<pre><code>headers:
+X-Principal: {&quot;user_id&quot;:2, &quot;student_id&quot;:2}
+
+payload:
+{
+    &quot;content&quot;: &quot;some text&quot;
+}
+
+response:
+{
+    &quot;data&quot;: {
+        &quot;content&quot;: &quot;some text&quot;,
+        &quot;created_at&quot;: &quot;2021-09-17T03:14:08.572545&quot;,
+        &quot;grade&quot;: null,
+        &quot;id&quot;: 5,
+        &quot;state&quot;: &quot;DRAFT&quot;,
+        &quot;student_id&quot;: 1,
+        &quot;teacher_id&quot;: null,
+        &quot;updated_at&quot;: &quot;2021-09-17T03:14:08.572560&quot;
+    }
+}
+</code></pre>
+<h3 id="post-studentassignments-1">POST /student/assignments</h3>
+<p>Edit an assignment</p>
+<pre><code>headers:
+X-Principal: {&quot;user_id&quot;:2, &quot;student_id&quot;:2}
+
+payload:
+{
+    &quot;id&quot;: 5,
+    &quot;content&quot;: &quot;some updated text&quot;
+}
+
+response:
+{
+    &quot;data&quot;: {
+        &quot;content&quot;: &quot;some updated text&quot;,
+        &quot;created_at&quot;: &quot;2021-09-17T03:14:08.572545&quot;,
+        &quot;grade&quot;: null,
+        &quot;id&quot;: 5,
+        &quot;state&quot;: &quot;DRAFT&quot;,
+        &quot;student_id&quot;: 1,
+        &quot;teacher_id&quot;: null,
+        &quot;updated_at&quot;: &quot;2021-09-17T03:15:06.349337&quot;
+    }
+}
+</code></pre>
+<h3 id="post-studentassignmentssubmit">POST /student/assignments/submit</h3>
+<p>Submit an assignment</p>
+<pre><code>headers:
+X-Principal: {&quot;user_id&quot;:1, &quot;student_id&quot;:1}
+
+payload:
+{
+    &quot;id&quot;: 2,
+    &quot;teacher_id&quot;: 2
+}
+
+response:
+{
+    &quot;data&quot;: {
+        &quot;content&quot;: &quot;THESIS T1&quot;,
+        &quot;created_at&quot;: &quot;2021-09-17T03:14:01.580467&quot;,
+        &quot;grade&quot;: null,
+        &quot;id&quot;: 2,
+        &quot;state&quot;: &quot;SUBMITTED&quot;,
+        &quot;student_id&quot;: 1,
+        &quot;teacher_id&quot;: 2,
+        &quot;updated_at&quot;: &quot;2021-09-17T03:17:20.147349&quot;
+    }
+}
+
+</code></pre>
+<h3 id="get-teacherassignments">GET /teacher/assignments</h3>
+<p>List all assignments submitted to this teacher</p>
+<pre><code>headers:
+X-Principal: {&quot;user_id&quot;:3, &quot;teacher_id&quot;:1}
+
+response:
+{
+    &quot;data&quot;: [
+        {
+            &quot;content&quot;: &quot;ESSAY T1&quot;,
+            &quot;created_at&quot;: &quot;2021-09-17T03:14:01.580126&quot;,
+            &quot;grade&quot;: null,
+            &quot;id&quot;: 1,
+            &quot;state&quot;: &quot;SUBMITTED&quot;,
+            &quot;student_id&quot;: 1,
+            &quot;teacher_id&quot;: 1,
+            &quot;updated_at&quot;: &quot;2021-09-17T03:14:01.584644&quot;
+        }
+    ]
+}
+</code></pre>
+<h3 id="post-teacherassignmentsgrade">POST /teacher/assignments/grade</h3>
+<p>Grade an assignment</p>
+<pre><code>headers:
+X-Principal: {&quot;user_id&quot;:3, &quot;teacher_id&quot;:1}
+
+payload:
+{
+    &quot;id&quot;:  1,
+    &quot;grade&quot;: &quot;A&quot;
+}
+
+response:
+{
+    &quot;data&quot;: {
+        &quot;content&quot;: &quot;ESSAY T1&quot;,
+        &quot;created_at&quot;: &quot;2021-09-17T03:14:01.580126&quot;,
+        &quot;grade&quot;: &quot;A&quot;,
+        &quot;id&quot;: 1,
+        &quot;state&quot;: &quot;GRADED&quot;,
+        &quot;student_id&quot;: 1,
+        &quot;teacher_id&quot;: 1,
+        &quot;updated_at&quot;: &quot;2021-09-17T03:20:42.896947&quot;
+    }
+}
+</code></pre>
+<h2 id="missing-apis">Missing APIs</h2>
+<p>You'll need to implement these APIs</p>
+<h3 id="get-principalassignments">GET /principal/assignments</h3>
+<p>List all submitted and graded assignments</p>
+<pre><code>headers:
+X-Principal: {&quot;user_id&quot;:5, &quot;principal_id&quot;:1}
+
+response:
+{
+    &quot;data&quot;: [
+        {
+            &quot;content&quot;: &quot;ESSAY T1&quot;,
+            &quot;created_at&quot;: &quot;2021-09-17T03:14:01.580126&quot;,
+            &quot;grade&quot;: null,
+            &quot;id&quot;: 1,
+            &quot;state&quot;: &quot;SUBMITTED&quot;,
+            &quot;student_id&quot;: 1,
+            &quot;teacher_id&quot;: 1,
+            &quot;updated_at&quot;: &quot;2021-09-17T03:14:01.584644&quot;
+        }
+    ]
+}
+</code></pre>
+<h3 id="get-principalteachers">GET /principal/teachers</h3>
+<p>List all the teachers</p>
+<pre><code>headers:
+X-Principal: {&quot;user_id&quot;:5, &quot;principal_id&quot;:1}
+
+
+response:
+{
+    &quot;data&quot;: [
+        {
+            &quot;created_at&quot;: &quot;2024-01-08T07:58:53.131970&quot;,
+            &quot;id&quot;: 1,
+            &quot;updated_at&quot;: &quot;2024-01-08T07:58:53.131972&quot;,
+            &quot;user_id&quot;: 3
+        }
+    ]
+}
+</code></pre>
+<h3 id="post-principalassignmentsgrade">POST /principal/assignments/grade</h3>
+<p>Grade or re-grade an assignment</p>
+<pre><code>headers:
+X-Principal: {&quot;user_id&quot;:5, &quot;principal_id&quot;:1}
+
+payload:
+{
+    &quot;id&quot;:  1,
+    &quot;grade&quot;: &quot;A&quot;
+}
+
+response:
+{
+    &quot;data&quot;: {
+        &quot;content&quot;: &quot;ESSAY T1&quot;,
+        &quot;created_at&quot;: &quot;2021-09-17T03:14:01.580126&quot;,
+        &quot;grade&quot;: &quot;A&quot;,
+        &quot;id&quot;: 1,
+        &quot;state&quot;: &quot;GRADED&quot;,
+        &quot;student_id&quot;: 1,
+        &quot;teacher_id&quot;: 1,
+        &quot;updated_at&quot;: &quot;2021-09-17T03:20:42.896947&quot;
+    }
+}
+</code></pre>
+
+            
+            
+        </body>
+        </html>
